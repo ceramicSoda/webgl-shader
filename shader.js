@@ -1,11 +1,11 @@
 // ---Use glsl-literal plugin for GLSL syntax highlight
 // ---Vertex shader
 const vs = /*glsl*/`
-    attribute   vec2 a_position;
+    attribute   vec2 aPos;
     varying     vec2 vUv;
     void main() {
-        vUv = a_position * 0.5 + 0.5;
-        gl_Position = vec4(a_position, 0.0, 1.0);
+        vUv = aPos * 0.5 + 0.5;
+        gl_Position = vec4(aPos, 0.0, 1.0);
     }    
 `;
 // ---Fragment shader

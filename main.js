@@ -20,6 +20,9 @@ class Scene{
             -1.0, -1.0,     1.0, -1.0,     -1.0, 1.0,
             -1.0,  1.0,     1.0, -1.0,      1.0, 1.0,
         ]); 
+        this.geom = this.gl.createBuffer();
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.geom);
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, planeGeom, this.gl.STATIC_DRAW);
     }
 
     updateSize(){
@@ -51,7 +54,17 @@ class Scene{
             this.gl.deleteProgram(prog);
             return null;
         }
+
+        const posPtr = gl.getAttribLocation(prog, "a_position");
+        gl.enableVertexAttribArray(posPtr);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.geom);
+        gl.vertexAttribPointer(posPtr, 2, gl.FLOAT, false, 0, 0);
+        
         return prog;
+    }
+
+    render(){
+        requestAnimationFrame(()=>this.render);
     }
 
     initGl(){
@@ -64,10 +77,9 @@ class Scene{
         this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
         this.gl.clearColor(0, 0, 0, 1);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT);
-    }
-    
-    render(){
+        this.genPlaneGeom();
 
+        this.render(); 
     }
 }
 
