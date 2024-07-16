@@ -26,15 +26,17 @@ class Scene{
     }
 
     updateSize(){
-        this.canvas.width = this.parent.innerWidth;
-        this.canvas.height = this.parent.innerHeight;
+        // this.canvas.width = this.parent.innerWidth;
+        // this.canvas.height = this.parent.innerHeight;
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
     }
 
     genShader(type, src){
         const shader = this.gl.createShader(type);
         this.gl.shaderSource(shader, src);
         this.gl.compileShader(shader);
-        if (!gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)){
+        if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)){
             console.error(this.gl.getShaderInfoLog(shader));
             this.gl.deleteShader(shader);
             return null;
@@ -55,34 +57,43 @@ class Scene{
             return null;
         }
 
-        const posPtr = gl.getAttribLocation(prog, "a_position");
-        gl.enableVertexAttribArray(posPtr);
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.geom);
-        gl.vertexAttribPointer(posPtr, 2, gl.FLOAT, false, 0, 0);
+        const posPtr = this.gl.getAttribLocation(prog, "aPos");
+        console.log(posPtr); 
+        this.gl.enableVertexAttribArray(posPtr);
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.geom);
+        this.gl.vertexAttribPointer(posPtr, 2, this.gl.FLOAT, false, 0, 0);
         
         return prog;
     }
 
     render(){
         requestAnimationFrame(()=>this.render);
+        this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+        this.gl.drawArrays(this.gl.TRIANGLES, 0, 6);
     }
 
     initGl(){
         this.canvas.setAttribute('id', 'glViewport');
-        this.parent.append(this.canvas);
         this.updateSize();
-        this.gl = canvas.getContext("webgl");
-        if (!this.gl)
+        this.parent.append(this.canvas);
+        this.gl = this.canvas.getContext("webgl");
+        if (!this.gl){
             console.error('Failed to init WebGL!');
+            return null; 
+        }
         this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
         this.gl.clearColor(0, 0, 0, 1);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT);
         this.genPlaneGeom();
 
+        let shader = scene.genProg(vs, fs); 
+        scene.gl.useProgram(shader);    
         this.render(); 
     }
 }
 
+let scene = new Scene(document.body);
+scene.initGl(); 
 window.addEventListener("resize", () => {
-
+    scene.updateSize();
 });
