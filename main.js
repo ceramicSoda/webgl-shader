@@ -5,6 +5,50 @@ const render = (gl) => {
     requestAnimationFrame(render); 
 }
 
+
+class Material{
+    constructor(){
+        this.fs     = null;
+        this.vs     = null;
+        this.prog   = null; 
+        this.uni    = {};
+        this.attr   = {};
+    }
+
+    genShader(gl, type, src){
+        const shader = gl.createShader(type);
+        gl.shaderSource(shader, src);
+        gl.compileShader(shader);
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)){
+            console.error(gl.getShaderInfoLog(shader));
+            gl.deleteShader(shader);
+            return null;
+        }
+        return shader;
+    }
+
+    genProg(gl, vsSrc, fsSrc){
+        vs = this.genShader(gl.VERTEX_SHADER, vsSrc);
+        fs = this.genShader(gl.FRAGMENT_SHADER, fsSrc);
+        this.prog = gl.createProgram();
+        gl.attachShader(this.prog, vs);
+        gl.attachShader(this.prog, fs);
+        gl.linkProgram(this.prog);
+        if (!gl.getProgramParameter(this.prog, gl.LINK_STATUS)){
+            console.error(gl.getProgramInfoLog(this.prog));
+            gl.deleteProgram(this.prog);
+            return null;
+        }
+        return this.prog;
+    }
+    addUniform(gl, type, val){
+
+    }
+    addAttribute(gl, type, val){
+
+    }
+}
+
 class Scene{
     constructor(parent = document.body){
         this.canvas     = document.createElement('canvas'); 
@@ -30,40 +74,6 @@ class Scene{
         // this.canvas.height = this.parent.innerHeight;
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
-    }
-
-    genShader(type, src){
-        const shader = this.gl.createShader(type);
-        this.gl.shaderSource(shader, src);
-        this.gl.compileShader(shader);
-        if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)){
-            console.error(this.gl.getShaderInfoLog(shader));
-            this.gl.deleteShader(shader);
-            return null;
-        }
-        return shader;
-    }
-
-    genProg(vsSrc, fsSrc){
-        const vs = this.genShader(this.gl.VERTEX_SHADER, vsSrc);
-        const fs = this.genShader(this.gl.FRAGMENT_SHADER, fsSrc);
-        const prog = this.gl.createProgram();
-        this.gl.attachShader(prog, vs);
-        this.gl.attachShader(prog, fs);
-        this.gl.linkProgram(prog);
-        if (!this.gl.getProgramParameter(prog, this.gl.LINK_STATUS)){
-            console.error(this.gl.getProgramInfoLog(prog));
-            this.gl.deleteProgram(prog);
-            return null;
-        }
-
-        const posPtr = this.gl.getAttribLocation(prog, "aPos");
-        console.log(posPtr); 
-        this.gl.enableVertexAttribArray(posPtr);
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.geom);
-        this.gl.vertexAttribPointer(posPtr, 2, this.gl.FLOAT, false, 0, 0);
-        
-        return prog;
     }
 
     render(){
