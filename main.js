@@ -1,9 +1,13 @@
 import {vs, fs} from './shader.js'
 
+const planeGeom = new Float32Array([
+    -1.0, -1.0,     1.0, -1.0,     -1.0, 1.0,
+    -1.0,  1.0,     1.0, -1.0,      1.0, 1.0,
+]); 
+
 const render = (gl) => {   
     requestAnimationFrame(render); 
 }
-
 
 class Material{
     constructor(){
@@ -40,11 +44,16 @@ class Material{
         }
         return this.prog;
     }
+
     addUniform(gl, type, val){
 
     }
-    addAttribute(gl, type, val){
 
+    addAttribute(gl, type, name, val, size){
+        const attrPtr = gl.getAttribLocation(this.prog, name);
+        gl.enableVertexAttribArray(attrPtr);
+        gl.bindBuffer(gl.ARRAY_BUFFER, val);
+        gl.vertexAttribPointer(attrPtr, size, type, false, 0, 0);
     }
 }
 
