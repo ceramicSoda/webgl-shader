@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:codepen": "vite build --config vite.config.codepen.js",
     "preview": "vite preview"
   },
   "devDependencies": {

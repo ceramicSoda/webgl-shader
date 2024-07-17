@@ -1,4 +1,3 @@
-import './style.css'
 import {vs, fs} from './shader.js'
 
 const render = (gl) => {   
